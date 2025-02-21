@@ -8,7 +8,7 @@ const input = document.querySelector('#search-input');
 const loader = document.querySelector('.loader');
 const gallery = document.querySelector('.gallery');
 
-form.addEventListener('submit', async (event) => {
+form.addEventListener('submit', function (event) {
     event.preventDefault();
 
     const query = input.value.trim();
@@ -24,16 +24,18 @@ form.addEventListener('submit', async (event) => {
     gallery.innerHTML = '';
     loader.classList.add('visible');
 
-    try {
-        const images = await fetchImages(query);
-        renderImages(images);
-    } catch (error) {
-        iziToast.error({
-            title: 'Error',
-            message: 'Try again!',
-            position: 'topRight',
+    fetchImages(query)
+        .then(images => {
+            renderImages(images);
+        })
+        .catch(error => {
+            iziToast.error({
+                title: 'Error',
+                message: 'Try again!',
+                position: 'topRight',
+            });
+        })
+        .finally(() => {
+            loader.classList.remove('visible');
         });
-    } finally {
-        loader.classList.remove('visible');
-    }
 });
